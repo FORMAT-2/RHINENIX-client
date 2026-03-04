@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || 'https://rhinenix-server.vercel.app/api/v1',
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -24,7 +24,7 @@ api.interceptors.response.use(
       try {
         const tokens = JSON.parse(localStorage.getItem('rhinenix_tokens') || 'null');
         if (tokens?.refreshToken) {
-          const { data } = await axios.post('/api/v1/auth/refresh-token', {
+          const { data } = await axios.post(`${api.defaults.baseURL}/auth/refresh-token`, {
             refreshToken: tokens.refreshToken,
           });
           localStorage.setItem('rhinenix_tokens', JSON.stringify(data.data.tokens));
